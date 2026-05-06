@@ -1,0 +1,73 @@
+{
+  "repo": "lattice-trace-redact-dock",
+  "language": "Scala",
+  "category": "Observability",
+  "goal": "Package a Scala local lab for redact analysis with bounded scenario files, conflict explanations, and documented operating limits.",
+  "review_model": {
+    "terms": [
+      "span volume",
+      "latency skew",
+      "signal loss",
+      "incident shape"
+    ],
+    "lanes": [
+      "ship",
+      "watch",
+      "hold"
+    ],
+    "score": "signal * 2 + slack + confidence - drag * 3",
+    "purpose": "surface the domain-specific cases that need the most careful review"
+  },
+  "cases": [
+    {
+      "name": "baseline",
+      "focus": "span volume",
+      "signal": 77,
+      "slack": 39,
+      "drag": 18,
+      "confidence": 86,
+      "score": 225,
+      "lane": "ship"
+    },
+    {
+      "name": "stress",
+      "focus": "latency skew",
+      "signal": 47,
+      "slack": 25,
+      "drag": 15,
+      "confidence": 80,
+      "score": 154,
+      "lane": "ship"
+    },
+    {
+      "name": "edge",
+      "focus": "signal loss",
+      "signal": 51,
+      "slack": 35,
+      "drag": 29,
+      "confidence": 66,
+      "score": 116,
+      "lane": "watch"
+    },
+    {
+      "name": "recovery",
+      "focus": "incident shape",
+      "signal": 85,
+      "slack": 20,
+      "drag": 28,
+      "confidence": 62,
+      "score": 168,
+      "lane": "ship"
+    },
+    {
+      "name": "stale",
+      "focus": "span volume",
+      "signal": 87,
+      "slack": 46,
+      "drag": 8,
+      "confidence": 86,
+      "score": 282,
+      "lane": "ship"
+    }
+  ]
+}

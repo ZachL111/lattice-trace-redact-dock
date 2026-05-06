@@ -1,68 +1,40 @@
 # lattice-trace-redact-dock
 
-`lattice-trace-redact-dock` is a focused Scala codebase around package a Scala local lab for redact analysis with bounded scenario files, conflict explanations, and documented operating limits. It is meant to be easy to inspect, run, and extend without a hosted service.
-
-## Lattice Trace Redact Dock Walkthrough
-
-I would read the project from the outside in: command, fixture, model, then roadmap. That keeps the observability idea grounded in files that can be checked locally.
+`lattice-trace-redact-dock` keeps a focused Scala implementation around observability. The project goal is to package a Scala local lab for redact analysis with bounded scenario files, conflict explanations, and documented operating limits.
 
 ## Reason For The Project
 
-This is not a wrapper around a service. It is a self-contained project that shows how the model behaves when demand, capacity, latency, risk, and weight move in different directions.
+This is intentionally local and self-contained so it can be inspected without credentials, services, or seeded history.
+
+## Lattice Trace Redact Dock Review Notes
+
+Start with `span volume` and `signal loss`. Those cases create the widest score spread in this repo, so they are the best quick check when the model changes.
+
+## What It Does
+
+- `fixtures/domain_review.csv` adds cases for span volume and latency skew.
+- `metadata/domain-review.json` records the same cases in structured form.
+- `config/review-profile.json` captures the read order and the two review questions.
+- `examples/lattice-trace-redact-walkthrough.md` walks through the case spread.
+- The Scala code includes a review path for `span volume` and `signal loss`.
+- `docs/field-notes.md` explains the strongest and weakest cases.
 
 ## How It Is Put Together
 
-The interesting part is the boundary between accepted and reviewed scenarios. Extended examples sit near that boundary so future edits can show whether the model became more permissive or more cautious. The Scala code uses case classes and a compact object API to keep the test path direct.
+The repository has two validation layers: the original compact policy fixture and the domain review fixture. They are separate so one can change without hiding failures in the other.
 
-## Data Notes
+The Scala implementation avoids hidden state so fixture changes are easy to reason about.
 
-The extended cases are not random smoke tests. `degraded` keeps pressure on the review path, while `surge` shows the model when capacity and weight are strong enough to clear the threshold.
-
-## Capabilities
-
-- Uses fixture data to keep log shape changes visible in code review.
-- Includes extended examples for latency summaries, including `surge` and `degraded`.
-- Documents incident slices tradeoffs in `docs/operations.md`.
-- Runs locally with a single verification command and no external credentials.
-- Stores project constants and verification metadata in `metadata/project.json`.
-
-## Getting It Running
-
-Use a normal shell with Scala available on `PATH`. The verifier is written as a PowerShell script because the portfolio was assembled on Windows.
-
-## Check The Work
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit.ps1
-```
-
-The audit command checks repository structure and README constraints before it delegates to the verifier.
-
-## Where Things Live
-
-- `src`: primary implementation
-- `tests`: verification harness
-- `fixtures`: compact golden scenarios
-- `examples`: expanded scenario set
-- `metadata`: project constants and verification metadata
-- `docs`: operations and extension notes
-- `scripts`: local verification and audit commands
-
-## Tradeoffs
-
-This code is local-first. It makes no claim about deployed usage and avoids credentials, hosted state, and environment-specific setup.
-
-## Possible Extensions
-
-- Add a short report command that prints the score breakdown for a single scenario.
-- Add malformed input fixtures so the failure path is as visible as the happy path.
-- Split the scoring constants into a typed configuration object and validate it before use.
-- Add one more observability fixture that focuses on a malformed or borderline input.
-
-## Command Examples
+## Run It
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
 ```
 
-This runs the language-level build or test path against the compact fixture set.
+## Check It
+
+That command is also the regression path. It verifies the domain cases and catches mismatches between the CSV, metadata, and code.
+
+## Boundaries
+
+The fixture set is small enough to audit by hand. The next useful expansion is malformed input coverage, not extra surface area.
